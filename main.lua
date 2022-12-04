@@ -160,7 +160,7 @@ local function pattern3(i) -- if all scraper is visible
 		setOthersTo0(2, grid[2][i])
 		setOthersTo0(3, grid[3][i])
 		setOthersTo0(4, grid[4][i])
-	elseif clues[i+4] == 4 then
+	elseif clues[i+4] == 4 then -- clues sides comparrison
 		setOthersTo0(1, grid[i][4])
 		setOthersTo0(2, grid[i][3])
 		setOthersTo0(3, grid[i][2])
@@ -170,11 +170,23 @@ local function pattern3(i) -- if all scraper is visible
 		setOthersTo0(2, grid[3][5-i])
 		setOthersTo0(3, grid[2][5-i])
 		setOthersTo0(4, grid[1][5-i])
-	elseif clues[i+12] == 4 then
+	elseif clues[i+12] == 4 then -- clues side comparrison
 		setOthersTo0(1, grid[5-i][1])
 		setOthersTo0(2, grid[5-i][2])
 		setOthersTo0(3, grid[5-i][3])
 		setOthersTo0(4, grid[5-i][4])
+	end
+end
+
+local function pattern4(i) -- if two skycrapers are visible first one can't be talest
+	if clues[i] == 2 then -- clues top to bottom comparisson
+		grid[1][i].size[4] = 0
+	elseif clues[i+4] == 2 then -- clues side comparrison
+		grid[i][4].size[4] = 0
+	elseif clues[i+8] == 2 then -- clues top to bottom comparisson
+		grid[4][5-i].size[4] = 0
+	elseif clues[i+12] == 2 then
+		grid[5-i][1].size[4] = 0
 	end
 end
 
@@ -183,6 +195,7 @@ local function patterns() -- if it's [13 - i] or [17 - i] then we invert what we
 		pattern1(i)
 		pattern2(i)
 		pattern3(i)
+		pattern4(i)
 		removeNumber()
 	end
 end
