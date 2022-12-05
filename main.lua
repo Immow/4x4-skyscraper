@@ -106,16 +106,6 @@ local function removeNumber()
 	end
 end
 
--- combinations when clue = 2
--- 1,4
--- 2,4
--- 3,4
--- 2,1,4
--- 3,1,4
--- 3,2,4
--- 3,1,2,4
--- 3,2,1,4
-
 local function pattern1(i) -- if only 1 scraper is visible then it's the talest scraper
 	if clues[i] == 1 then  -- top
 		setOthersTo0(4, grid[1][i])
@@ -185,8 +175,70 @@ local function pattern4(i) -- if two skycrapers are visible first one can't be t
 		grid[i][4].size[4] = 0
 	elseif clues[i+8] == 2 then -- clues top to bottom comparisson
 		grid[4][5-i].size[4] = 0
-	elseif clues[i+12] == 2 then
+	elseif clues[i+12] == 2 then -- clues side comparrison
 		grid[5-i][1].size[4] = 0
+	end
+end
+
+local function pattern5() -- if two skycrapers are visible first one can't be talest
+	-- for y, columns in ipairs(grid) do
+		-- local n1, n2, n3, n4 = 0, 0, 0, 0
+
+		-- local n1T, n2T, n3T, n4T = {}, {}, {}, {}
+		-- for x, tile in ipairs(columns) do
+		-- 	if tile.size[1] ~= 0 then
+		-- 		n1 = n1 + 1
+		-- 		n1T = tile
+		-- 	elseif tile.size[2] ~= 0 then
+		-- 		n2 = n2 + 1
+		-- 		n2T = tile
+		-- 	elseif tile.size[3] ~= 0 then
+		-- 		n3 = n3 + 1
+		-- 		n3T = tile
+		-- 	elseif tile.size[4] ~= 0 then
+		-- 		n4 = n4 + 1
+		-- 		n4T = tile
+		-- 	end
+		-- end
+
+		-- if n1 == 1 then
+		-- 	setOthersTo0(1, n1T)
+		-- elseif n2 == 1 then
+		-- 	setOthersTo0(2, n2T)
+		-- elseif n3 == 1 then
+		-- 	setOthersTo0(3, n3T)
+		-- elseif n4 == 1 then
+		-- 	setOthersTo0(4, n4T)
+		-- end
+	for i = 1, 4 do
+		if grid[i][1].size[1] + grid[i][2].size[1] + grid[i][3].size[1] + grid[i][4].size[1] == 1 then
+			for j = 1, 4 do
+				if grid[i][j].size[1] ~= 0 then
+					setOthersTo0(1, grid[i][j])
+				end
+			end
+		end
+		if grid[i][1].size[2] + grid[i][2].size[2] + grid[i][3].size[2] + grid[i][4].size[2] == 2 then
+			for j = 1, 4 do
+				if grid[i][j].size[2] ~= 0 then
+					setOthersTo0(2, grid[i][j])
+				end
+			end
+		end
+		if grid[i][1].size[3] + grid[i][2].size[3] + grid[i][3].size[3] + grid[i][4].size[3] == 3 then
+			for j = 1, 4 do
+				if grid[i][j].size[3] ~= 0 then
+					setOthersTo0(3, grid[i][j])
+				end
+			end
+		end
+		if grid[i][1].size[4] + grid[i][2].size[4] + grid[i][3].size[4] + grid[i][4].size[4] == 4 then
+			for j = 1, 4 do
+				if grid[i][j].size[4] ~= 0 then
+					setOthersTo0(4, grid[i][j])
+				end
+			end
+		end
 	end
 end
 
@@ -198,6 +250,7 @@ local function patterns() -- if it's [13 - i] or [17 - i] then we invert what we
 		pattern4(i)
 		removeNumber()
 	end
+	pattern5()
 end
 
 local function drawClues(x, y, tile)
