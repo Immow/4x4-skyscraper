@@ -41,7 +41,15 @@ local function createGrid()
 		for x = 1, 4 do
 			local cellX = offset + x * cellWidth
 			local cellY = offset + y * cellHeight
-			grid[y][x] = {x = cellX, y = cellY, width = cellWidth, height = cellHeight, size = {1,2,3,4}, drawNumber = nil}
+			grid[y][x] = {
+					x = cellX,
+					y = cellY,
+					width = cellWidth,
+					height = cellHeight,
+					size = {1,2,3,4},
+					foundNumber = nil,
+					drawNumber = nil
+				}
 		end
 	end
 end
@@ -50,6 +58,8 @@ local function setOthersTo0(n, tile)
 	for j = 1, 4 do
 		if j ~= n then
 			tile.size[j] = 0
+		else
+			tile.foundNumber = n
 		end
 	end
 end
@@ -180,36 +190,7 @@ local function pattern4(i) -- if two skycrapers are visible first one can't be t
 	end
 end
 
-local function pattern5() -- if two skycrapers are visible first one can't be talest
-	-- for y, columns in ipairs(grid) do
-		-- local n1, n2, n3, n4 = 0, 0, 0, 0
-
-		-- local n1T, n2T, n3T, n4T = {}, {}, {}, {}
-		-- for x, tile in ipairs(columns) do
-		-- 	if tile.size[1] ~= 0 then
-		-- 		n1 = n1 + 1
-		-- 		n1T = tile
-		-- 	elseif tile.size[2] ~= 0 then
-		-- 		n2 = n2 + 1
-		-- 		n2T = tile
-		-- 	elseif tile.size[3] ~= 0 then
-		-- 		n3 = n3 + 1
-		-- 		n3T = tile
-		-- 	elseif tile.size[4] ~= 0 then
-		-- 		n4 = n4 + 1
-		-- 		n4T = tile
-		-- 	end
-		-- end
-
-		-- if n1 == 1 then
-		-- 	setOthersTo0(1, n1T)
-		-- elseif n2 == 1 then
-		-- 	setOthersTo0(2, n2T)
-		-- elseif n3 == 1 then
-		-- 	setOthersTo0(3, n3T)
-		-- elseif n4 == 1 then
-		-- 	setOthersTo0(4, n4T)
-		-- end
+local function pattern5() --checks if only one unique skyscraper is left
 	for i = 1, 4 do
 		if grid[i][1].size[1] + grid[i][2].size[1] + grid[i][3].size[1] + grid[i][4].size[1] == 1 then
 			for j = 1, 4 do
@@ -242,15 +223,89 @@ local function pattern5() -- if two skycrapers are visible first one can't be ta
 	end
 end
 
+local function pattern6(i) -- if clue is 2 and 4 is oposite, then first skyscaper has to be a 3
+	if clues[i] == 2 and clues[13-i] == 1 then -- clues top to bottom comparisson
+		setOthersTo0(3, grid[1][i])
+		setOthersTo0(2, grid[4][i])
+	elseif clues[i] == 1 and clues[13-i] == 2 then -- clues top to bottom comparisson
+		-- setOthersTo0(2, grid[1][i])
+		-- setOthersTo0(4, grid[4][i])
+	end
+
+	-- if clues[i+4] == 2 and clues[17-i] == 4 then -- clues sides comparrison
+	-- 	setOthersTo0(2, grid[i][1])
+	-- 	setOthersTo0(3, grid[i][2])
+	-- 	setOthersTo0(1, grid[i][3])
+	-- 	setOthersTo0(4, grid[i][4])
+	-- elseif clues[i+4] == 4 and clues[17-i] == 2 then -- clues sides comparrison
+	-- 	setOthersTo0(4, grid[i][1])
+	-- 	setOthersTo0(1, grid[i][2])
+	-- 	setOthersTo0(3, grid[i][3])
+	-- 	setOthersTo0(2, grid[i][4])
+	-- end
+end
+
+local function setClueForTalestScraper()
+	for y, columns in ipairs(grid) do
+		for x, tile in ipairs(columns) do
+			if tile.drawNumber == 4 then
+				if y == 1 then
+					if x == 1 then
+						clues[1] = 1
+						clues[16] = 1
+					elseif x == 2 then
+						clues[2] = 1
+					elseif x == 3 then
+						clues[3] = 1
+					elseif x == 4 then
+						clues[4] = 1
+						clues[5] = 1
+					end
+				end
+
+				if y == 2 then
+					if x == 1 then
+						clues[15] = 1
+					elseif x == 4 then
+						clues[6] = 1
+					end
+				end
+				if y == 3 then
+					if x == 1 then
+						clues[14] = 1
+					elseif x == 4 then
+						clues[7] = 1
+					end
+				end
+				if y == 4 then
+					if x == 1 then
+						clues[13] = 1
+						clues[12] = 1
+					elseif x == 2 then
+						clues[11] = 1
+					elseif x == 3 then
+						clues[10] = 1
+					elseif x == 4 then
+						clues[9] = 1
+						clues[8] = 1
+					end
+				end
+			end
+		end
+	end
+end
+
 local function patterns() -- if it's [13 - i] or [17 - i] then we invert what we compare against.
 	for i = 1, 4 do
 		pattern1(i)
 		pattern2(i)
 		pattern3(i)
 		pattern4(i)
+		pattern6(i)
 		removeNumber()
 	end
 	pattern5()
+	setClueForTalestScraper()
 end
 
 local function drawClues(x, y, tile)
