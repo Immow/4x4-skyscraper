@@ -226,23 +226,15 @@ end
 local function pattern6(i) -- if clue is 2 and 4 is oposite, then first skyscaper has to be a 3
 	if clues[i] == 2 and clues[13-i] == 1 then -- clues top to bottom comparisson
 		setOthersTo0(3, grid[1][i])
-		setOthersTo0(2, grid[4][i])
 	elseif clues[i] == 1 and clues[13-i] == 2 then -- clues top to bottom comparisson
-		-- setOthersTo0(2, grid[1][i])
-		-- setOthersTo0(4, grid[4][i])
+		setOthersTo0(3, grid[4][i])
 	end
 
-	-- if clues[i+4] == 2 and clues[17-i] == 4 then -- clues sides comparrison
-	-- 	setOthersTo0(2, grid[i][1])
-	-- 	setOthersTo0(3, grid[i][2])
-	-- 	setOthersTo0(1, grid[i][3])
-	-- 	setOthersTo0(4, grid[i][4])
-	-- elseif clues[i+4] == 4 and clues[17-i] == 2 then -- clues sides comparrison
-	-- 	setOthersTo0(4, grid[i][1])
-	-- 	setOthersTo0(1, grid[i][2])
-	-- 	setOthersTo0(3, grid[i][3])
-	-- 	setOthersTo0(2, grid[i][4])
-	-- end
+	if clues[i+4] == 2 and clues[17-i] == 1 then -- clues sides comparrison
+		setOthersTo0(3, grid[i][1])
+	elseif clues[i+4] == 1 and clues[17-i] == 2 then -- clues sides comparrison
+		setOthersTo0(3, grid[i][1])
+	end
 end
 
 local function setClueForTalestScraper()
